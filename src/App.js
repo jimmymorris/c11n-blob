@@ -18,7 +18,7 @@ const App = () => {
   const [backgroundImage, setBackgroundImage] = React.useState(
     randomBackgroundImage()
   );
-  const [noiseStep, setNoiseStep] = React.useState(0.005);
+  const [noiseStep, setNoiseStep] = React.useState(0.01);
   const [pause, setPause] = React.useState(false);
 
   const controls = useControls(
@@ -108,15 +108,15 @@ const App = () => {
             x="0"
             y="0"
             patternUnits="userSpaceOnUse"
-            height="400"
-            width="400"
+            height="200"
+            width="200"
           >
             <image
               x="0"
-              y="-100"
+              y="-50"
               href={allBackgrounds[backgroundImage]}
-              width="400"
-              height="400"
+              width="300"
+              height="300"
             />
           </pattern>
         </defs>
