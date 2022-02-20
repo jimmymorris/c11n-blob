@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/c11n-blob/static/css/main.4e809409.css",
-    "main.js": "/c11n-blob/static/js/main.7a77604d.js",
+    "main.css": "/c11n-blob/static/css/main.4785ccf4.css",
+    "main.js": "/c11n-blob/static/js/main.e15f8f3e.js",
     "static/media/Cool3.jpg": "/c11n-blob/static/media/Cool3.ea641f7f4b6d327bd711.jpg",
     "static/media/Brand2.jpg": "/c11n-blob/static/media/Brand2.a0d6752c8078a48b702b.jpg",
     "static/media/Warm3.jpg": "/c11n-blob/static/media/Warm3.20cc3b1fbd7e409992d1.jpg",
@@ -23,11 +23,11 @@
     "static/media/Warm4.jpg": "/c11n-blob/static/media/Warm4.c60cc48143d073daab50.jpg",
     "static/media/Brand1.jpg": "/c11n-blob/static/media/Brand1.1fd05085f2d0b1e3f5bd.jpg",
     "index.html": "/c11n-blob/index.html",
-    "main.4e809409.css.map": "/c11n-blob/static/css/main.4e809409.css.map",
-    "main.7a77604d.js.map": "/c11n-blob/static/js/main.7a77604d.js.map"
+    "main.4785ccf4.css.map": "/c11n-blob/static/css/main.4785ccf4.css.map",
+    "main.e15f8f3e.js.map": "/c11n-blob/static/js/main.e15f8f3e.js.map"
   },
   "entrypoints": [
-    "static/css/main.4e809409.css",
-    "static/js/main.7a77604d.js"
+    "static/css/main.4785ccf4.css",
+    "static/js/main.e15f8f3e.js"
   ]
 }
