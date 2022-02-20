@@ -1,0 +1,33 @@
+{
+  "files": {
+    "main.css": "/c11n-blob/static/css/main.4e809409.css",
+    "main.js": "/c11n-blob/static/js/main.7a77604d.js",
+    "static/media/Cool3.jpg": "/c11n-blob/static/media/Cool3.ea641f7f4b6d327bd711.jpg",
+    "static/media/Brand2.jpg": "/c11n-blob/static/media/Brand2.a0d6752c8078a48b702b.jpg",
+    "static/media/Warm3.jpg": "/c11n-blob/static/media/Warm3.20cc3b1fbd7e409992d1.jpg",
+    "static/media/Brand6.jpg": "/c11n-blob/static/media/Brand6.41360ed25aa4d935c2f4.jpg",
+    "static/media/Brand3.jpg": "/c11n-blob/static/media/Brand3.5de68573281fd81d7883.jpg",
+    "static/media/Warm5.jpg": "/c11n-blob/static/media/Warm5.33ca73699800fa7156ac.jpg",
+    "static/media/Brand5.jpg": "/c11n-blob/static/media/Brand5.9623b11241be95fc3780.jpg",
+    "static/media/Cool4.jpg": "/c11n-blob/static/media/Cool4.d7a17966ddc92e061170.jpg",
+    "static/media/Warm1.jpg": "/c11n-blob/static/media/Warm1.8fad7e2f95462fdaf4dd.jpg",
+    "static/media/Brand4.jpg": "/c11n-blob/static/media/Brand4.9d575b02a090290cc400.jpg",
+    "static/media/Warm2.jpg": "/c11n-blob/static/media/Warm2.81f3fa621b757fe61315.jpg",
+    "static/media/Warm6.jpg": "/c11n-blob/static/media/Warm6.422cf98667c65158ea1b.jpg",
+    "static/media/Brand8.jpg": "/c11n-blob/static/media/Brand8.47e611c44fc58039db6f.jpg",
+    "static/media/Brand7.jpg": "/c11n-blob/static/media/Brand7.92baaf7187ae4bdfc9d0.jpg",
+    "static/media/Cool2.jpg": "/c11n-blob/static/media/Cool2.c33dbe2a04e38b2b38f9.jpg",
+    "static/media/Cool6.jpg": "/c11n-blob/static/media/Cool6.63a9d5079f678ab7557e.jpg",
+    "static/media/Cool5.jpg": "/c11n-blob/static/media/Cool5.0bfb27577246f051701d.jpg",
+    "static/media/Cool1.jpg": "/c11n-blob/static/media/Cool1.da54a6a56d74ba54bf5d.jpg",
+    "static/media/Warm4.jpg": "/c11n-blob/static/media/Warm4.c60cc48143d073daab50.jpg",
+    "static/media/Brand1.jpg": "/c11n-blob/static/media/Brand1.1fd05085f2d0b1e3f5bd.jpg",
+    "index.html": "/c11n-blob/index.html",
+    "main.4e809409.css.map": "/c11n-blob/static/css/main.4e809409.css.map",
+    "main.7a77604d.js.map": "/c11n-blob/static/js/main.7a77604d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4e809409.css",
+    "static/js/main.7a77604d.js"
+  ]
+}
