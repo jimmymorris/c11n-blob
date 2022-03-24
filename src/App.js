@@ -77,7 +77,7 @@ const App = () => {
                 label: 'Number of Points',
                 value: numberPoints,
                 min: 3,
-                max: 9,
+                max: 10,
                 step: 1,
                 onChange: value => {
                     setNumberPoints(value);
@@ -189,6 +189,7 @@ const App = () => {
         return () => cancelAnimationFrame(requestRef.current);
     }, [
         backgroundPoints,
+        numberPoints,
         blobFlexibility,
         controls.pause,
         frameCount,
