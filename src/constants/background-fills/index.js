@@ -48,10 +48,10 @@ const warmBackgrounds = {
   Warm6,
 };
 
-const allBackgrounds = {
+const ALL_BACKGROUNDS = {
   ...brandBackgrounds,
   ...coolBackgrounds,
   ...warmBackgrounds,
 };
 
-export { allBackgrounds, coolBackgrounds, warmBackgrounds, brandBackgrounds };
+export { ALL_BACKGROUNDS, coolBackgrounds, warmBackgrounds, brandBackgrounds };

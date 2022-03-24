@@ -1,142 +1,268 @@
-import React from "react";
-import { spline } from "@georgedoescode/spline";
-import { Leva, useControls } from "leva";
+import React from 'react';
+import { spline } from '@georgedoescode/spline';
+import { Leva, useControls } from 'leva';
 
-import map from "./map";
-import noise from "./noise";
-import createPoints from "./createPoints";
+import map from './helpers/map';
+import noise from './helpers/noise';
+import createPoints from './helpers/createPoints';
+import { THE_TEAM, AVAILABLE_IMAGES } from './helpers/random';
 
-import { allBackgrounds } from "./background-fills";
-import randomItem from "./randomItem";
+import { DEFAULTS, TWO_PI } from './constants/defaults';
+import { BACKGROUND_COLORS } from './constants/backgroundColors';
 
-import "./App.css";
+import { ALL_BACKGROUNDS } from './constants/background-fills';
+import { TEAM_AVATARS } from './constants/team-avatars';
 
-const availableImages = [...Object.keys(allBackgrounds)];
-const randomBackgroundImage = () => randomItem(availableImages);
+import './tokens.css';
+import './App.css';
 
 const App = () => {
-  const [backgroundImage, setBackgroundImage] = React.useState(
-    randomBackgroundImage()
-  );
-  const [noiseStep, setNoiseStep] = React.useState(0.01);
-  const [pause, setPause] = React.useState(false);
+    const [backgroundColor, setBackgroundColor] = React.useState(DEFAULTS.BACKGROUND_COLOR);
+    const [backgroundImage, setBackgroundImage] = React.useState(DEFAULTS.BACKGROUND_IMAGE);
+    const [blobFlexibility, setBlobFlexibility] = React.useState(DEFAULTS.BLOB_FLEXIBILITY);
+    const [avatar, setAvatar] = React.useState(DEFAULTS.AVATAR);
+    const [showAvatar, setShowAvatar] = React.useState(DEFAULTS.SHOW_AVATAR);
+    const [noiseStep, setNoiseStep] = React.useState(DEFAULTS.NOISE_STEP);
+    const [loopLength, setLoopLength] = React.useState(DEFAULTS.LOOP_LENGTH); // seconds
+    const [numberPoints, setNumberPoints] = React.useState(DEFAULTS.NUMBER_POINTS);
 
-  const controls = useControls(
-    {
-      pause: {
-        label: "Pause Animation",
-        value: false,
-        onChange: (value) => setPause(value),
-      },
-      showPoints: { label: "Show Points", value: false },
-      noiseStep: {
-        label: 'Movement Speed',
-        value: noiseStep * 1000,
-        min: 1,
-        max: 50,
-        step: 0.5,
-        onChange: (value) => {
-          setNoiseStep(value / 10000);
+    const [backgroundPoints, setBackgroundPoints] = React.useState(
+        createPoints({ numberPoints: DEFAULTS.NUMBER_POINTS })
+    );
+
+    const [backgroundD, setBackgroundD] = React.useState(spline(backgroundPoints, 1, true));
+
+    const [progress, setProgress] = React.useState(0);
+    const [frameCount, setFrameCount] = React.useState(0);
+
+    const requestRef = React.useRef();
+    const previousTimeRef = React.useRef();
+
+    const controls = useControls(
+        {
+            background: {
+                value: backgroundImage,
+                label: 'Set Fill Image',
+                options: AVAILABLE_IMAGES,
+                onChange: image => {
+                    setBackgroundImage(image);
+                },
+            },
+            backgroundColor: {
+                label: 'Set Background Color',
+                options: Object.keys(BACKGROUND_COLORS),
+                value: backgroundColor,
+                onChange: value => {
+                    setBackgroundColor(value);
+                },
+            },
+            avatar: {
+                value: avatar,
+                label: 'Set Teammate Image',
+                options: THE_TEAM,
+                onChange: image => {
+                    setAvatar(image);
+                },
+            },
+            showAvatar: {
+                label: 'Show Avatar',
+                value: false,
+                onChange: value => setShowAvatar(value),
+            },
+            pause: {
+                label: 'Pause Animation',
+                value: false,
+            },
+            numberPoints: {
+                label: 'Number of Points',
+                value: numberPoints,
+                min: 3,
+                max: 9,
+                step: 1,
+                onChange: value => {
+                    setNumberPoints(value);
+                },
+            },
+            loopLength: {
+                label: 'Loop Length (seconds)',
+                value: loopLength,
+                onChange: value => {
+                    setLoopLength(value);
+                },
+            },
+            noiseStep: {
+                label: 'Movement Speed',
+                value: noiseStep * 1000,
+                min: 1,
+                max: 40,
+                step: 0.25,
+                onChange: value => {
+                    setNoiseStep(value / 10000);
+                },
+            },
+            blobFlex: {
+                label: 'Blob Flexibility',
+                value: blobFlexibility,
+                min: 10,
+                max: 30,
+                step: 1,
+                onChange: value => {
+                    setBlobFlexibility(value);
+                },
+            },
+            showPoints: { label: 'Show Points', value: false },
+            showStats: { label: 'Show Stats', value: false },
         },
-      },
-      background: {
-        value: backgroundImage,
-        label: "Set Background Image",
-        options: availableImages,
-        onChange: (image) => {
-          setBackgroundImage(image);
-        },
-      },
-    },
-    [noiseStep, backgroundImage]
-  );
+        [noiseStep, backgroundImage, avatar, showAvatar]
+    );
 
-  const [points, setPoints] = React.useState(createPoints({ numPoints: 6 }));
+    React.useEffect(() => {
+        setBackgroundPoints(createPoints({ numberPoints }));
+    }, [numberPoints]);
 
-  const [d, setD] = React.useState(spline(points, 1, true));
+    React.useEffect(() => {
+        const fps = 60; // frames per second
+        const frameTotal = loopLength * fps;
 
-  const requestRef = React.useRef();
-  const previousTimeRef = React.useRef();
+        const animate = time => {
+            if (previousTimeRef.current !== undefined) {
+                setProgress(frameCount / frameTotal);
+                setBackgroundD(spline(backgroundPoints, 1, true));
 
-  React.useEffect(() => {
-    if (!pause) {
-      const animate = (time) => {
+                // for every point...
+                const update = backgroundPoints.map(p => {
+                    const point = p;
+                    const theta = progress * TWO_PI;
+                    // return a pseudo random value between -1 / 1 based on this point's current x, y positions in "time"
+                    const nX = noise(
+                        point.noiseOffsetX * noiseStep,
+                        point.noiseOffsetX * noiseStep
+                    );
+                    const nY = noise(
+                        point.noiseOffsetY * noiseStep,
+                        point.noiseOffsetY * noiseStep
+                    );
+                    // map this noise value to a new value, somewhere between it's original location -20 and it's original location + 20
+                    const x = map(
+                        nX,
+                        -1,
+                        1,
+                        point.originX - parseInt(blobFlexibility),
+                        point.originX + parseInt(blobFlexibility)
+                    );
+                    const y = map(
+                        nY,
+                        -1,
+                        1,
+                        point.originY - parseInt(blobFlexibility),
+                        point.originY + parseInt(blobFlexibility)
+                    );
+
+                    // update the point's current coordinates
+                    point.x = x;
+                    point.y = y;
+
+                    // progress the point's x, y values through "time"
+                    point.noiseOffsetX += Math.cos(theta) + noiseStep;
+                    point.noiseOffsetY += Math.sin(theta) + noiseStep;
+
+                    return point;
+                });
+
+                setBackgroundPoints(update);
+                if (frameCount < frameTotal) {
+                    setFrameCount(frameCount + 1);
+                } else {
+                    setFrameCount(0);
+                }
+            }
+
+            previousTimeRef.current = time;
+            // requestRef.current = requestAnimationFrame(animate);
+        };
+
         if (!controls.pause) {
-          if (previousTimeRef.current !== undefined) {
-            setD(spline(points, 1, true));
-
-            // for every point...
-            const update = points.map((p) => {
-              const point = p;
-
-              // return a pseudo random value between -1 / 1 based on this point's current x, y positions in "time"
-              const nX = noise(point.noiseOffsetX, point.noiseOffsetX);
-              const nY = noise(point.noiseOffsetY, point.noiseOffsetY);
-              // map this noise value to a new value, somewhere between it's original location -20 and it's original location + 20
-              const x = map(nX, -1, 1, point.originX - 20, point.originX + 20);
-              const y = map(nY, -1, 1, point.originY - 20, point.originY + 20);
-
-              // update the point's current coordinates
-              point.x = x;
-              point.y = y;
-
-              // progress the point's x, y values through "time"
-              point.noiseOffsetX += noiseStep;
-              point.noiseOffsetY += noiseStep;
-
-              return point;
-            });
-
-            setPoints(update);
-          }
-
-          previousTimeRef.current = time;
-          requestRef.current = requestAnimationFrame(animate);
+            requestRef.current = requestAnimationFrame(animate);
+        } else {
+            cancelAnimationFrame(requestRef.current);
         }
-      };
-      requestRef.current = requestAnimationFrame(animate);
-    }
-    return () => cancelAnimationFrame(requestRef.current);
-  }, [noiseStep, pause, controls.pause, points]);
+        return () => cancelAnimationFrame(requestRef.current);
+    }, [
+        backgroundPoints,
+        blobFlexibility,
+        controls.pause,
+        frameCount,
+        loopLength,
+        noiseStep,
+        progress,
+    ]);
 
-  return (
-    <>
-      <svg id="blob" viewBox="0 0 200 200" fille="transparent">
-        <defs>
-          <pattern
-            id="image"
-            x="0"
-            y="0"
-            patternUnits="userSpaceOnUse"
-            height="200"
-            width="200"
-          >
-            <image
-              x="0"
-              y="-50"
-              href={allBackgrounds[backgroundImage]}
-              width="300"
-              height="300"
-            />
-          </pattern>
-        </defs>
-        <path d={d} fill="url(#image)"></path>
-        {controls.showPoints &&
-          points.map(({ x, y }, idx) => (
-            <circle
-              fill="white"
-              stroke="black"
-              strokeWidth="1px"
-              key={`circle-${idx}`}
-              cx={x}
-              cy={y}
-              r="2"
-            />
-          ))}
-      </svg>
-      <Leva oneLineLabels />
-    </>
-  );
+    return (
+        <div
+            className="wrapper"
+            style={{ backgroundColor: `var(${BACKGROUND_COLORS[backgroundColor]})` }}
+        >
+            <svg id="blob" viewBox="0 0 200 200" fill="transparent">
+                <defs>
+                    <pattern
+                        id="backgroundImage"
+                        x="0"
+                        y="0"
+                        patternUnits="userSpaceOnUse"
+                        height="300"
+                        width="300"
+                    >
+                        <image
+                            x="0"
+                            y="-50"
+                            href={ALL_BACKGROUNDS[backgroundImage]}
+                            width="300"
+                            height="300"
+                            preserveAspectRatio="xMidYMid slice"
+                        />
+                    </pattern>
+                </defs>
+                <g>
+                    <path d={backgroundD} fill="url(#backgroundImage)"></path>
+                    {controls.showPoints &&
+                        backgroundPoints.map(({ x, y }, idx) => (
+                            <circle
+                                fill="yellow"
+                                stroke="black"
+                                strokeWidth="1px"
+                                key={`circle-${idx}`}
+                                cx={x}
+                                cy={y}
+                                r="2"
+                            />
+                        ))}
+                </g>
+                {showAvatar && (
+                    <g>
+                        <image
+                            height="150"
+                            width="150"
+                            transform="translate(25 25)"
+                            href={TEAM_AVATARS[avatar]}
+                            preserveAspectRatio="xMidYMid slice"
+                        />
+                    </g>
+                )}
+            </svg>
+            <Leva oneLineLabels />
+            {controls.showStats && (
+                <div className="stats">
+                    <pre>
+                        frameCount: {frameCount}
+                        <br />
+                        progress: {(progress * 100).toFixed(2)}
+                        <br />
+                        theta: {(progress * Math.PI * 2).toFixed(2)}
+                    </pre>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default App;

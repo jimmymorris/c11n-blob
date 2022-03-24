@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "https://jimmymorris.github.io/c11n-blob/",
   "dependencies": {
+    "@ffmpeg/core": "^0.10.0",
+    "@ffmpeg/ffmpeg": "^0.10.1",
     "@georgedoescode/generative-utils": "^1.0.37",
     "@georgedoescode/spline": "^1.0.1",
     "@testing-library/jest-dom": "^5.16.2",
